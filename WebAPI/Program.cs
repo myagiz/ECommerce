@@ -15,6 +15,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IUserService, UserManager>();
 builder.Services.AddTransient<IUserDal, EfCoreUserDal>();
 
+builder.Services.AddTransient<IProductService, ProductManager>();
+builder.Services.AddTransient<IProductDal, EfCoreProductDal>();
+
+builder.Services.AddTransient<IProductCategoryService, ProductCategoryManager>();
+builder.Services.AddTransient<IProductCategoryDal, EfCoreProductCategoryDal>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

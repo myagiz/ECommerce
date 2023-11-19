@@ -17,6 +17,7 @@ namespace Business.Constants
         public static string GetById = "Get by Id !";
 
         public static string UserNotFound = "User not found !";
+        public static string NotFoundData = "Data not found !";
         public static string PasswordError = "Password Error";
         public static string SuccessfulLogin = "Login successfully!";
         public static string UserAlreadyExists = "User already exists !";
