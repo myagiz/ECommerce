@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -22,7 +23,7 @@ namespace Core.Utilities.Security.JWT
             Configuration = configuration;
         }
 
-        public Token CreateAccessToken(User user)
+        public Token CreateAccessToken(User user, List<string> roles)
         {
             Token tokenInstance = new Token();
 
@@ -30,13 +31,13 @@ namespace Core.Utilities.Security.JWT
 
             SigningCredentials signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            tokenInstance.Expiration = DateTime.Now.AddMinutes(30);
+            tokenInstance.Expiration = DateTime.Now.AddHours(1);
             JwtSecurityToken securityToken = new JwtSecurityToken(
                 issuer: Configuration["Token:Issuer"],
                 audience: Configuration["Token:Audience"],
                 expires: tokenInstance.Expiration,
                 notBefore: DateTime.Now,
-                claims: SetClaims(user),
+                claims: SetClaims(user, roles),
                 signingCredentials: signingCredentials
                 );
 
@@ -57,15 +58,18 @@ namespace Core.Utilities.Security.JWT
             }
         }
 
-        private IEnumerable<Claim> SetClaims(User user)
+        private IEnumerable<Claim> SetClaims(User user, List<string> roles)
         {
             var claims = new List<Claim>();
+            claims.AddRoles(roles.ToArray());
             claims.AddRange(new Claim[]
                             {
-                     new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                     new Claim(ClaimTypes.NameIdentifier,string.Concat(user.FirstName," ",user.LastName)),
                      new Claim(ClaimTypes.Email,user.EmailAddress),
                      new Claim(ClaimTypes.Name,user.FirstName),
                      new Claim(ClaimTypes.Surname,user.LastName),
+                     new Claim("userId",user.Id.ToString()),
+
                             }); ;
             return claims;
         }

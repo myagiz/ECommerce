@@ -1,4 +1,5 @@
 ﻿using Core.Repository.Concrete;
+using Core.Utilities.Current;
 using DataAccess.Abstract;
 using Entities.DTOs;
 using Entities.Entity;
@@ -24,7 +25,7 @@ namespace DataAccess.Concrete.EfCore
                 entity.Name = model.Name;
                 entity.Amount = model.Amount;
                 entity.CreateDate = DateTime.Now;
-                entity.CreateUserId = 1;
+                entity.CreateUserId = UserCurrents.UserId();
                 entity.IsActive = true;
                 context.Products.Add(entity);
                 await context.SaveChangesAsync();
@@ -36,7 +37,7 @@ namespace DataAccess.Concrete.EfCore
             using (var context = new ECommerceDbContext())
             {
                 var getData = await context.Products.FirstOrDefaultAsync(x => x.IsActive == true && x.Id == productId);
-                if (getData != null) { getData.IsActive = false; getData.UpdateDate = DateTime.Now; getData.UpdateUserId = 1; await context.SaveChangesAsync(); }
+                if (getData != null) { getData.IsActive = false; getData.UpdateDate = DateTime.Now; getData.UpdateUserId = UserCurrents.UserId(); await context.SaveChangesAsync(); }
             }
         }
 
@@ -96,7 +97,7 @@ namespace DataAccess.Concrete.EfCore
                     getData.Name = model.Name;
                     getData.Amount = model.Amount;
                     getData.UpdateDate = DateTime.Now;
-                    getData.UpdateUserId = 1;
+                    getData.UpdateUserId = UserCurrents.UserId();
                     await context.SaveChangesAsync();
                 }
             }

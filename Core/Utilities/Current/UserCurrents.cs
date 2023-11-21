@@ -33,10 +33,6 @@ namespace Core.Utilities.Current
         {
             return Current.User.Identity.GetUserId();
         }
-        //public static Guid CompanyId()
-        //{
-        //    return Current.User.Identity.GetCompanyId();
-        //}
 
         public static List<string> GetRoles()
         {
