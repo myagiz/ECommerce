@@ -10,6 +10,6 @@ namespace Core.Utilities.Security.JWT
     public interface ITokenService
     {
         public string CreateRefreshToken();
-        public Token CreateAccessToken(User user);
+        public Token CreateAccessToken(User user, List<string> roles);
     }
 }

@@ -37,29 +37,22 @@ namespace Core.Utilities.Current
         static int GetUserId(this ClaimsIdentity identity)
         {
             if (identity.IsAuthenticated)
-                return int.Parse(identity.Claims?.FirstOrDefault(c => c.Type == "UserId")?.Value);
-            else
-                return 0;
+            {
+                var userIdClaim = identity.Claims?.FirstOrDefault(c => c.Type == "userId");
+                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userId))
+                {
+                    return userId;
+                }
+            }
+            return 0;
+
         }
+
         public static int GetUserId(this IIdentity identity)
         {
             var claimsIdentity = identity as ClaimsIdentity;
             return claimsIdentity != null ? GetUserId(claimsIdentity) : 0;
         }
-
-        //static Guid GetCompanyId(this ClaimsIdentity identity)
-        //{
-        //    if (identity.IsAuthenticated)
-        //        return Guid.Parse(identity.Claims?.FirstOrDefault(c => c.Type == "CompanyId")?.Value);
-        //    else
-        //        return Guid.Empty;
-        //}
-        //public static Guid GetCompanyId(this IIdentity identity)
-        //{
-        //    var claimsIdentity = identity as ClaimsIdentity;
-        //    return claimsIdentity != null ? GetCompanyId(claimsIdentity) : Guid.Empty;
-        //}
-
 
         static List<Claim> GetAll(this ClaimsIdentity identity)
         {
