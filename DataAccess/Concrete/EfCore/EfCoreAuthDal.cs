@@ -25,12 +25,12 @@ namespace DataAccess.Concrete.EfCore
             _tokenService = tokenService;
         }
 
-        public async Task<Token> LoginAsync(string emailAddress, string password)
+        public async Task<Token> LoginAsync(LoginDto model)
         {
             using (var context = new ECommerceDbContext())
             {
                 Token token = new Token();
-                var getUser = await context.Users.FirstOrDefaultAsync(x => x.EmailAddress == emailAddress && x.Password == password);
+                var getUser = await context.Users.FirstOrDefaultAsync(x => x.EmailAddress == model.EmailAddress && x.Password == model.Password);
                 if (getUser != null)
                 {
                     TokenService tokenService = new TokenService(_configuration);

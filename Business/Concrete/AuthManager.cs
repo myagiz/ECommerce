@@ -27,12 +27,12 @@ namespace Business.Concrete
             _userDal = userDal;
         }
 
-        public async Task<IDataResult<Token>> LoginAsync(string emailAddress, string password)
+        public async Task<IDataResult<Token>> LoginAsync(LoginDto model)
         {
-            IResult result = BusinessRules.Run(CheckCorrectEmailAndPassword(emailAddress, password));
+            IResult result = BusinessRules.Run(CheckCorrectEmailAndPassword(model.EmailAddress, model.Password));
             if (result == null)
             {
-                var getToken = await _authDal.LoginAsync(emailAddress, password);
+                var getToken = await _authDal.LoginAsync(model);
                 return new SuccessDataResult<Token>(getToken, Messages.UserRegistered);
             }
 

@@ -12,6 +12,6 @@ namespace Business.Abstract
     public interface IAuthService
     {
         Task<IResult> RegisterAsync(RegisterDto model);
-        Task<IDataResult<Token>> LoginAsync(string emailAddress, string password);
+        Task<IDataResult<Token>> LoginAsync(LoginDto model);
     }
 }
