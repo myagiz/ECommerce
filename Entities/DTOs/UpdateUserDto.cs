@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entities.DTOs
 {
-    public class CreateUserDto
+    public class UpdateUserDto
     {
+        public int Id { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string EmailAddress { get; set; } = null!;
