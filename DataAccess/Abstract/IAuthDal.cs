@@ -11,6 +11,6 @@ namespace DataAccess.Abstract
     public interface IAuthDal
     {
         Task RegisterAsync(RegisterDto model);
-        Task<Token> LoginAsync(string emailAddress, string password);
+        Task<Token> LoginAsync(LoginDto model);
     }
 }

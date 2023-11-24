@@ -19,6 +19,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetAllProductAsync")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProductAsync()
         {
             var result = await _productService.GetAllProductsAsync();
@@ -30,6 +31,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetProductById{productId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductById(int productId)
         {
             var result = await _productService.GetProductById(productId);

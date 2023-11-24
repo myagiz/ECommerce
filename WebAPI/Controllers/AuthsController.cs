@@ -28,9 +28,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("LoginAsync")]
-        public async Task<IActionResult> LoginAsync(string emailAddress, string password)
+        public async Task<IActionResult> LoginAsync(LoginDto model)
         {
-            var result = await _authService.LoginAsync(emailAddress, password);
+            var result = await _authService.LoginAsync(model);
             if (result.Success)
             {
                 return Ok(result);
