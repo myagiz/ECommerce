@@ -25,7 +25,7 @@ namespace DataAccess.Concrete.EfCore
                 entity.Name = model.Name;
                 entity.Amount = model.Amount;
                 entity.CreateDate = DateTime.Now;
-                entity.CreateUserId = UserCurrents.UserId();
+                entity.CreateUserId = 1;
                 entity.IsActive = true;
                 context.Products.Add(entity);
                 await context.SaveChangesAsync();

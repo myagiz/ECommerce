@@ -12,5 +12,9 @@ namespace DataAccess.Abstract
     public interface IUserDal : IEntityRepository<User>
     {
         Task CreateUserAsync(CreateUserDto model);
+        Task UpdateUserAsync(UpdateUserDto model);
+        Task DeleteUserAsync(int userId);
+        Task<List<GetAllUserDto>> GetAllUsersAsync();
+        Task<GetAllUserDto> GetUserByIdAsync(int userId);
     }
 }

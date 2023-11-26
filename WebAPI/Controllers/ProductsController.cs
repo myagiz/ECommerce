@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("GetProductById{productId}")]
+        [HttpGet("GetProductById/{productId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductById(int productId)
         {
@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
             return BadRequest(result);
         }
 
-        [HttpDelete("DeleteProductAsync{productId}")]
+        [HttpDelete("DeleteProductAsync/{productId}")]
         public async Task<IActionResult> DeleteProductAsync(int productId)
         {
             var result = await _productService.DeleteProductAsync(productId);
