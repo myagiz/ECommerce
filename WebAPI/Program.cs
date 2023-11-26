@@ -9,10 +9,13 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -29,7 +32,11 @@ builder.Services.AddTransient<IProductCategoryDal, EfCoreProductCategoryDal>();
 builder.Services.AddTransient<IAuthService, AuthManager>();
 builder.Services.AddTransient<IAuthDal, EfCoreAuthDal>();
 
+builder.Services.AddTransient<IOrderService, OrderManager>();
+builder.Services.AddTransient<IOrderDal, EfCoreOrderDal>();
+
 builder.Services.AddTransient<ITokenService, TokenService>();
+
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
 {
@@ -39,9 +46,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuer = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Token:Issuer"],
-        ValidAudience = builder.Configuration["Token:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
+        ValidIssuer = configuration["Token:Issuer"],
+        ValidAudience = configuration["Token:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Token:SecurityKey"])),
         ClockSkew = TimeSpan.Zero
     };
 
@@ -71,7 +78,7 @@ builder.Services.AddSwaggerGen(c =>
                 },
                 new string[] {}
                 }};
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "E-Commerce API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
     c.AddSecurityDefinition("bearerAuth", securityScheme);
     c.AddSecurityRequirement(securityRequirement);
 
@@ -84,14 +91,21 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ECommerce API");
+    });
+
 }
+
 app.UseCors(options =>
   options.WithOrigins("http://localhost:4200")
     .AllowAnyMethod()
     .AllowAnyHeader());
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseAuthentication();
 

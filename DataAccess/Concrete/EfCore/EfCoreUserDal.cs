@@ -113,7 +113,7 @@ namespace DataAccess.Concrete.EfCore
                 if (getRole != null)
                 {
                     getRole.RoleId = model.RoleId;
-                    getRole.UpdateUserId = 1;
+                    getRole.UpdateUserId = UserCurrents.UserId();
                     getRole.UpdateDate = DateTime.Now;
                     await context.SaveChangesAsync();
                 }

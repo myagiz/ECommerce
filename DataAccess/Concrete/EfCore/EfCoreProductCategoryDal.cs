@@ -1,4 +1,5 @@
 ﻿using Core.Repository.Concrete;
+using Core.Utilities.Current;
 using DataAccess.Abstract;
 using Entities.DTOs;
 using Entities.Entity;
@@ -20,7 +21,7 @@ namespace DataAccess.Concrete.EfCore
                 ProductCategory entity = new ProductCategory();
                 entity.Name = model.Name;
                 entity.CreateDate = DateTime.Now;
-                entity.CreateUserId = 1;
+                entity.CreateUserId = UserCurrents.UserId();
                 entity.IsActive = true;
                 context.ProductCategories.Add(entity);
                 await context.SaveChangesAsync();
@@ -68,7 +69,7 @@ namespace DataAccess.Concrete.EfCore
                 {
                     getData.Name = model.Name;
                     getData.UpdateDate = DateTime.Now;
-                    getData.UpdateUserId = 1;
+                    getData.UpdateUserId = UserCurrents.UserId();
                     await context.SaveChangesAsync();
                 }
 
