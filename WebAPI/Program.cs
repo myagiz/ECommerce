@@ -1,9 +1,14 @@
 using Business.Abstract;
 using Business.Concrete;
+using Core.Utilities.Configs.Abstract;
+using Core.Utilities.Configs.Concrete;
 using Core.Utilities.Security.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EfCore;
+using DataAccess.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -15,7 +20,9 @@ ConfigurationManager configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddDbContext<ECommerceDbContext>(options => {
+    options.UseSqlServer(configuration.GetConnectionString("ECommerceDbConnection"));
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,6 +43,7 @@ builder.Services.AddTransient<IOrderService, OrderManager>();
 builder.Services.AddTransient<IOrderDal, EfCoreOrderDal>();
 
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddSingleton<IECommerceConfigService, ECommerceConfigManager>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(option =>
