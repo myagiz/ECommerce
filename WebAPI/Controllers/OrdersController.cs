@@ -19,6 +19,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetAllOrderAsync")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllOrderAsync()
         {
             var result = await _orderService.GetAllOrderAsync();

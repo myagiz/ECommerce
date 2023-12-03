@@ -1,4 +1,5 @@
-﻿using Entities.Entity;
+﻿using Core.Utilities.Security.Identity;
+using Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace Core.Utilities.Security.JWT
     public interface ITokenService
     {
         public string CreateRefreshToken();
-        public Token CreateAccessToken(User user, List<string> roles);
+        public Token CreateAccessToken(ApplicationUser user, List<string> roles);
     }
 }

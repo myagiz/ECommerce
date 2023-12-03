@@ -1,4 +1,5 @@
 ﻿using Core.Utilities.Current;
+using Core.Utilities.Security.Identity;
 using Entities.Entity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +24,7 @@ namespace Core.Utilities.Security.JWT
             Configuration = configuration;
         }
 
-        public Token CreateAccessToken(User user, List<string> roles)
+        public Token CreateAccessToken(ApplicationUser user, List<string> roles)
         {
             Token tokenInstance = new Token();
 
@@ -58,14 +59,14 @@ namespace Core.Utilities.Security.JWT
             }
         }
 
-        private IEnumerable<Claim> SetClaims(User user, List<string> roles)
+        private IEnumerable<Claim> SetClaims(ApplicationUser user, List<string> roles)
         {
             var claims = new List<Claim>();
             claims.AddRoles(roles.ToArray());
             claims.AddRange(new Claim[]
                             {
                      new Claim(ClaimTypes.NameIdentifier,string.Concat(user.FirstName," ",user.LastName)),
-                     new Claim(ClaimTypes.Email,user.EmailAddress),
+                     new Claim(ClaimTypes.Email,user.Email),
                      new Claim(ClaimTypes.Name,user.FirstName),
                      new Claim(ClaimTypes.Surname,user.LastName),
                      new Claim("userId",user.Id.ToString()),

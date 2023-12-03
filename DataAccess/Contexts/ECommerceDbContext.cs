@@ -1,5 +1,6 @@
-﻿using Core.Utilities.Configs.Abstract;
+﻿using Core.Utilities.Security.Identity;
 using Entities.Entity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Contexts
 {
-    public class ECommerceDbContext : DbContext
+    public class ECommerceDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public ECommerceDbContext()
         {

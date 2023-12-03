@@ -47,12 +47,12 @@ namespace DataAccess.Concrete.EfCore
             using (var context = new ECommerceDbContext())
             {
                 var data = await (from a in context.Products.Where(x => x.IsActive == true)
-                                  join b in context.ProductCategories on a.CategoryId equals b.Id
+                                  //join b in context.ProductCategories on a.CategoryId equals b.Id
                                   select new GetAllProductDto
                                   {
                                       Id = a.Id,
-                                      CategoryId = a.CategoryId,
-                                      CategoryName = b.Name,
+                                      //CategoryId = a.CategoryId,
+                                      //CategoryName = b.Name,
                                       Name = a.Name,
                                       Amount = a.Amount,
                                       UnitPrice = a.UnitPrice,
@@ -68,12 +68,12 @@ namespace DataAccess.Concrete.EfCore
             using (var context = new ECommerceDbContext())
             {
                 var data = await (from a in context.Products.Where(x => x.IsActive == true && x.Id == productId)
-                                  join b in context.ProductCategories on a.CategoryId equals b.Id
+                                  //join b in context.ProductCategories on a.CategoryId equals b.Id
                                   select new GetProductByIdDto
                                   {
                                       Id = a.Id,
-                                      CategoryId = a.CategoryId,
-                                      CategoryName = b.Name,
+                                      //CategoryId = a.CategoryId,
+                                      //CategoryName = b.Name,
                                       Name = a.Name,
                                       Amount = a.Amount,
                                       UnitPrice = a.UnitPrice,

@@ -10,7 +10,7 @@ namespace DataAccess.Abstract
 {
     public interface IAuthDal
     {
-        Task RegisterAsync(RegisterDto model);
+        Task<string> RegisterAsync(RegisterDto model);
         Task<Token> LoginAsync(LoginDto model);
     }
 }

@@ -43,6 +43,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("CreateProductAsync")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProductAsync(CreateProductDto model)
         {
             var result = await _productService.CreateProductAsync(model);
@@ -55,6 +56,7 @@ namespace WebAPI.Controllers
 
 
         [HttpPut("UpdateProductAsync")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProductAsync(UpdateProductDto model)
         {
             var result = await _productService.UpdateProductAsync(model);
@@ -66,6 +68,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete("DeleteProductAsync/{productId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductAsync(int productId)
         {
             var result = await _productService.DeleteProductAsync(productId);
