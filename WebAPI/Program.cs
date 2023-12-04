@@ -1,4 +1,4 @@
-using Business.Abstract;
+﻿using Business.Abstract;
 using Business.Concrete;
 using Core.Utilities.Security.Identity;
 using Core.Utilities.Security.JWT;
@@ -7,6 +7,7 @@ using DataAccess.Concrete.EfCore;
 using DataAccess.Contexts;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -17,13 +18,11 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
-// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<ECommerceDbContext>
               (options => options.UseSqlServer(configuration.GetConnectionString("ECommerceDbConnection")));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -43,10 +42,11 @@ builder.Services.AddTransient<IOrderService, OrderManager>();
 builder.Services.AddTransient<IOrderDal, EfCoreOrderDal>();
 
 builder.Services.AddTransient<ITokenService, TokenService>();
-//builder.Services.AddSingleton<IECommerceConfigService, ECommerceConfigManager>();
+builder.Services.AddSingleton<DefaultUserInitializer>();
 
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
-    //options.Password.RequiredLength = 6;
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredUniqueChars = 0;
     options.Password.RequireUppercase = false;
@@ -61,23 +61,13 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options => {
     .AddEntityFrameworkStores<ECommerceDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.Name = "member_cookie";
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(90);
-    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-    options.SlidingExpiration = true;
-});
-builder.Services.AddSession();
-builder.Services.AddDistributedMemoryCache();
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options => {
+}).AddJwtBearer(options =>
+{
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
@@ -90,36 +80,34 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(option =>
 {
-    var securityScheme = new OpenApiSecurityScheme()
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
         In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
         Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT" // Optional
-    };
-    var securityRequirement = new OpenApiSecurityRequirement
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
                 {
-                   {
-                       new OpenApiSecurityScheme
-                       {
-                       Reference = new OpenApiReference
-                       {
-                         Type = ReferenceType.SecurityScheme,
-                         Id = JwtAuthenticationDefaults.AuthenticationScheme
-                       }
-                },
-                new string[] {}
-                }};
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ECommerce API", Version = "v1" });
-    c.AddSecurityDefinition("bearerAuth", securityScheme);
-    c.AddSecurityRequirement(securityRequirement);
-
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
 });
-
 
 
 
@@ -145,11 +133,12 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-//app.UseIdentity();
-
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+var defaultUserInitializer = app.Services.GetRequiredService<DefaultUserInitializer>();
+await defaultUserInitializer.InitializeDefaultUser();
 
 app.MapControllers();
 

@@ -69,6 +69,7 @@ namespace Core.Utilities.Security.JWT
                      new Claim(ClaimTypes.Email,user.Email),
                      new Claim(ClaimTypes.Name,user.FirstName),
                      new Claim(ClaimTypes.Surname,user.LastName),
+                     new Claim(JwtRegisteredClaimNames.Jti,user.Id.ToString()),
                      new Claim("userId",user.Id.ToString()),
 
                             }); ;

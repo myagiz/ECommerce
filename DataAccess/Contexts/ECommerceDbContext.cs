@@ -25,7 +25,7 @@ namespace DataAccess.Contexts
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-KVIRVD3;Database=ECommerceDb_New;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Data Source=DESKTOP-63V1NH4\\SQLEXPRESS;Database=ECommerceDb_New;Trusted_Connection=True;");
             }
         }
 
